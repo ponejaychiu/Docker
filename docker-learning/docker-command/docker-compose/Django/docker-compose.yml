@@ -1,0 +1,25 @@
+version: "3"
+services:
+
+  db:
+    image: jaychiu/mysql:5.5
+    volumes:
+      - /data/mysql/mydata3:/var/lib/mysql
+    ports:
+      - "3308:3306"
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: jaychiu2017
+      MYSQL_DATABASE: django_example
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: jaychiu2017
+
+  web:
+    build: .
+    command: python3 manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./example:/code
+    ports:
+      - "8000:8000"
+    links:
+      - db

@@ -1,0 +1,47 @@
+version: "3"
+
+services:
+  wordpress:
+    image: jaychiu/wordpress:4.9.1
+    ports:
+      - 81:80
+    networks:
+      - overlay
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: admin
+      WORDPRESS_DB_PASSWORD: jaychiu2017
+    deploy:
+      mode: replicated
+      replicas: 3
+
+  db:
+    image: jaychiu/mysql:5.5
+    networks:
+       - overlay
+    volumes:
+      - /data/mysql/mydata2:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: jaychiu2017
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: jaychiu2017
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+
+  visualizer:
+    image: dockersamples/visualizer:stable
+    ports:
+      - "8080:8080"
+    stop_grace_period: 1m30s
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+
+volumes:
+  db-data:
+networks:
+  overlay:

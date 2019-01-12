@@ -1,0 +1,18 @@
+mysql:
+   image: jaychiu/mysql:5.5
+   ports: 
+     - "3306:3306"
+   volumes:
+     - /data/mysql/mydata:/var/lib/mysql
+   hostname: mydb.server.com
+
+tomcat:
+   image: jaychiu/tomcat:7.0.55
+   ports:
+      - "8080:8080"
+   links:
+      - mysql:db
+   environment:
+      - TOMCAT_USER=admin
+      - TOMCAT_PASS=admin
+   hostname: tomcat.server.com
